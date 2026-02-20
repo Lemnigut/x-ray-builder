@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.queryBox {
+  background: #0d1520;
+  border: 1px solid #2d3a4a;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 60px;
+  overflow-x: auto;
+}
+
+.queryText {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e2e8f0;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.placeholder {
+  color: #4a5568;
+  font-style: italic;
+}
+
+.keyword {
+  color: #4a9eff;
+  font-weight: 600;
+}
+
+.operator {
+  color: #f6ad55;
+  font-weight: 700;
+}
+
+.value {
+  color: #68d391;
+}
+
+.quoted {
+  color: #fc8181;
+}
+
+.exclude {
+  color: #fc8181;
+  font-weight: 600;
+}
+
+.excludeValue {
+  color: #feb2b2;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 18px;
+  border: 1px solid #2d3a4a;
+  border-radius: 6px;
+  background: #1a2332;
+  color: #cbd5e0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #2a3f55;
+  border-color: #4a9eff;
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}

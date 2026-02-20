@@ -1,0 +1,146 @@
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inputArea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #1a2332;
+  border: 1px solid #2d3a4a;
+  border-radius: 8px;
+  cursor: text;
+  transition: border-color 0.2s;
+  min-height: 42px;
+}
+
+.inputArea:focus-within {
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.15);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #2a3f55;
+  border: 1px solid #3a5068;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+
+.removeTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.removeTag:hover {
+  color: #fc8181;
+}
+
+.input {
+  flex: 1;
+  min-width: 80px;
+  background: none;
+  border: none;
+  outline: none;
+  color: #e2e8f0;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.input::placeholder {
+  color: #4a5568;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 4px 0;
+  list-style: none;
+  background: #1e2d3d;
+  border: 1px solid #2d3a4a;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #cbd5e0;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.suggestionItem:hover,
+.highlighted {
+  background: #2a3f55;
+  color: #fff;
+}
+
+.loading {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #4a5568;
+  font-style: italic;
+}
+
+.related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.relatedLabel {
+  font-size: 11px;
+  color: #4a5568;
+}
+
+.relatedChip {
+  padding: 2px 10px;
+  background: transparent;
+  border: 1px dashed #2d3a4a;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.relatedChip:hover {
+  border-color: #4a9eff;
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.08);
+}
