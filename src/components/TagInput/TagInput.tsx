@@ -19,7 +19,7 @@ export function TagInput({ label, tags, onChange, suggestions = [], fetchSuggest
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Совпадение с начала любого слова: "fig" → "figma", "UI des" → "UI designer"
   const matchesFromStart = (suggestion: string, query: string): boolean => {
