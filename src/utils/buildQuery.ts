@@ -11,10 +11,10 @@ export const PLATFORMS: { key: string; label: string }[] = [
 ];
 
 const PLATFORM_QUERIES: Record<string, string> = {
-  telegram: '"t.me/"',
-  dribbble: '"dribbble.com/"',
-  behance:  '"behance.net/"',
-  github:   '"github.com/"',
+  telegram: '"t.me"',
+  dribbble: '"dribbble.com"',
+  behance:  '"behance.net"',
+  github:   '"github.com"',
   gmail:    '"@gmail.com"',
   mailru:   '"@mail.ru"',
   yandex:   '"@yandex.ru"',
