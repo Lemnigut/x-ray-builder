@@ -210,3 +210,57 @@ export function getRelatedSuggestions(tags: string[]): string[] {
 
   return result.slice(0, 5);
 }
+
+// ── Related для Exclude (грейды) ──
+const excludeRelated: Record<string, string[]> = {
+  'intern':     ['trainee', 'стажёр', 'junior'],
+  'trainee':    ['intern', 'стажёр', 'junior'],
+  'стажёр':     ['intern', 'trainee', 'джуниор'],
+  'junior':     ['junior+', 'джуниор', 'intern', 'trainee'],
+  'junior+':    ['junior', 'middle', 'джуниор'],
+  'джуниор':    ['junior', 'junior+', 'стажёр'],
+  'middle':     ['middle+', 'мидл', 'senior'],
+  'middle+':    ['middle', 'senior', 'мидл'],
+  'мидл':       ['middle', 'middle+', 'сеньор'],
+  'senior':     ['senior+', 'сеньор', 'staff', 'lead'],
+  'senior+':    ['senior', 'staff', 'principal'],
+  'сеньор':     ['senior', 'senior+', 'lead'],
+  'staff':      ['principal', 'senior+', 'tech lead'],
+  'principal':  ['staff', 'senior+', 'architect'],
+  'lead':       ['team lead', 'tech lead', 'тимлид', 'техлид', 'head'],
+  'team lead':  ['тимлид', 'tech lead', 'lead', 'manager'],
+  'тимлид':     ['team lead', 'tech lead', 'техлид', 'lead'],
+  'tech lead':  ['техлид', 'team lead', 'lead', 'architect'],
+  'техлид':     ['tech lead', 'team lead', 'тимлид', 'lead'],
+  'head':       ['director', 'VP', 'manager'],
+  'manager':    ['head', 'director', 'team lead'],
+  'director':   ['VP', 'head', 'CTO'],
+  'vp':         ['director', 'CTO', 'CEO'],
+  'cto':        ['VP', 'CEO', 'director'],
+  'ceo':        ['CTO', 'VP', 'director'],
+  'recruiter':  ['HR', 'sales'],
+  'hr':         ['recruiter', 'manager'],
+  'sales':      ['recruiter', 'consultant'],
+  'freelance':  ['consultant'],
+  'consultant': ['freelance'],
+};
+
+export function getExcludeRelated(tags: string[]): string[] {
+  const tagSet = new Set(tags.map(t => t.toLowerCase()));
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const tag of tags) {
+    const key = tag.toLowerCase();
+    const matches = excludeRelated[key] ?? [];
+    for (const r of matches) {
+      const rLower = r.toLowerCase();
+      if (!tagSet.has(rLower) && !seen.has(rLower)) {
+        seen.add(rLower);
+        result.push(r);
+      }
+    }
+  }
+
+  return result.slice(0, 5);
+}

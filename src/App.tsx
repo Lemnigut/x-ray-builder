@@ -3,9 +3,9 @@ import { TagInput } from './components/TagInput/TagInput';
 import { RegionSelect } from './components/RegionSelect/RegionSelect';
 import { QueryPreview } from './components/QueryPreview/QueryPreview';
 import { buildQuery } from './utils/buildQuery';
-import { jobTitleSuggestions, skillSuggestions, locationSuggestions } from './data/suggestions';
+import { jobTitleSuggestions, skillSuggestions, locationSuggestions, excludeSuggestions } from './data/suggestions';
 import { fetchSkillSuggestions } from './utils/fetchSkillSuggestions';
-import { getRelatedSuggestions } from './data/relatedSkills';
+import { getRelatedSuggestions, getExcludeRelated } from './data/relatedSkills';
 import type { FormState } from './types';
 import styles from './App.module.css';
 
@@ -26,6 +26,7 @@ export default function App() {
   const relatedJobTitles = useMemo(() => getRelatedSuggestions(form.jobTitles), [form.jobTitles]);
   const relatedSkillsAnd = useMemo(() => getRelatedSuggestions(form.skillsAnd), [form.skillsAnd]);
   const relatedSkillsOr = useMemo(() => getRelatedSuggestions(form.skillsOr), [form.skillsOr]);
+  const relatedExclude = useMemo(() => getExcludeRelated(form.exclude), [form.exclude]);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -69,6 +70,8 @@ export default function App() {
               label="Exclude (intitle) — исключить из заголовка"
               tags={form.exclude}
               onChange={v => update('exclude', v)}
+              suggestions={excludeSuggestions}
+              relatedTags={relatedExclude}
               placeholder="e.g. junior, intern"
             />
           </div>

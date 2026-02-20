@@ -232,3 +232,40 @@ export const locationSuggestions: string[] = [
   'Lisbon',
   'Barcelona',
 ];
+
+export const excludeSuggestions: string[] = [
+  // Грейды EN
+  'intern',
+  'trainee',
+  'junior',
+  'junior+',
+  'middle',
+  'middle+',
+  'senior',
+  'senior+',
+  'staff',
+  'principal',
+  // Грейды RU
+  'стажёр',
+  'джуниор',
+  'мидл',
+  'сеньор',
+  // Управление
+  'lead',
+  'team lead',
+  'tech lead',
+  'тимлид',
+  'техлид',
+  'head',
+  'manager',
+  'director',
+  'VP',
+  'CTO',
+  'CEO',
+  // Другое
+  'freelance',
+  'consultant',
+  'recruiter',
+  'HR',
+  'sales',
+];
