@@ -1,5 +1,25 @@
 import type { FormState } from '../types';
 
+export const PLATFORMS: { key: string; label: string }[] = [
+  { key: 'telegram', label: 'Telegram' },
+  { key: 'dribbble', label: 'Dribbble' },
+  { key: 'behance',  label: 'Behance' },
+  { key: 'github',   label: 'GitHub' },
+  { key: 'gmail',    label: '@gmail.com' },
+  { key: 'mailru',   label: '@mail.ru' },
+  { key: 'yandex',   label: '@yandex.ru' },
+];
+
+const PLATFORM_QUERIES: Record<string, string> = {
+  telegram: '"t.me/"',
+  dribbble: '"dribbble.com/"',
+  behance:  '"behance.net/"',
+  github:   '"github.com/"',
+  gmail:    '"@gmail.com"',
+  mailru:   '"@mail.ru"',
+  yandex:   '"@yandex.ru"',
+};
+
 /** Нужны кавычки: несколько слов, цифры, точки, дефисы, +, #, и т.д. */
 function needsQuotes(value: string): boolean {
   return /\s|[0-9.+#\-/]/.test(value);
@@ -45,9 +65,13 @@ export function buildQuery(fields: FormState): string {
   if (fields.companies.length)
     parts.push(fields.companies.map(intitle).join(' OR '));
 
-  // contacts: "@ gmail.com" OR "telegram" (поиск контактов в тексте)
-  if (fields.contacts.length)
-    parts.push(fields.contacts.map(c => `"${low(c)}"`).join(' OR '));
+  // platforms: чекбоксы — добавляют поисковые строки
+  const platformTerms = Object.entries(fields.platforms)
+    .filter(([, on]) => on)
+    .map(([key]) => PLATFORM_QUERIES[key])
+    .filter(Boolean);
+  if (platformTerms.length)
+    parts.push(platformTerms.join(' OR '));
 
   // exclude: -intitle:X -intitle:Y (убираем из заголовка)
   if (fields.exclude.length)

@@ -6,7 +6,7 @@ export interface FormState {
   locations: string[];
   companies: string[];
   exclude: string[];
-  contacts: string[];
+  platforms: Record<string, boolean>;
 }
 
 export interface Region {

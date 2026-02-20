@@ -2,10 +2,10 @@ import { useState, useMemo } from 'react';
 import { TagInput } from './components/TagInput/TagInput';
 import { RegionSelect } from './components/RegionSelect/RegionSelect';
 import { QueryPreview } from './components/QueryPreview/QueryPreview';
-import { buildQuery } from './utils/buildQuery';
-import { jobTitleSuggestions, skillSuggestions, locationSuggestions, excludeSuggestions, contactSuggestions } from './data/suggestions';
+import { buildQuery, PLATFORMS } from './utils/buildQuery';
+import { jobTitleSuggestions, skillSuggestions, locationSuggestions, excludeSuggestions } from './data/suggestions';
 import { fetchSkillSuggestions } from './utils/fetchSkillSuggestions';
-import { getRelatedSuggestions, getExcludeRelated, getContactRelated } from './data/relatedSkills';
+import { getRelatedSuggestions, getExcludeRelated } from './data/relatedSkills';
 import type { FormState } from './types';
 import styles from './App.module.css';
 
@@ -17,7 +17,7 @@ const initialState: FormState = {
   locations: [],
   companies: [],
   exclude: [],
-  contacts: [],
+  platforms: {},
 };
 
 export default function App() {
@@ -28,7 +28,13 @@ export default function App() {
   const relatedSkillsAnd = useMemo(() => getRelatedSuggestions(form.skillsAnd), [form.skillsAnd]);
   const relatedSkillsOr = useMemo(() => getRelatedSuggestions(form.skillsOr), [form.skillsOr]);
   const relatedExclude = useMemo(() => getExcludeRelated(form.exclude), [form.exclude]);
-  const relatedContacts = useMemo(() => getContactRelated(form.contacts), [form.contacts]);
+
+  const togglePlatform = (key: string) => {
+    setForm(prev => ({
+      ...prev,
+      platforms: { ...prev.platforms, [key]: !prev.platforms[key] },
+    }));
+  };
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -110,14 +116,23 @@ export default function App() {
               placeholder="e.g. Moscow, Remote"
             />
 
-            <TagInput
-              label="Contacts — поиск email, мессенджеров"
-              tags={form.contacts}
-              onChange={v => update('contacts', v)}
-              suggestions={contactSuggestions}
-              relatedTags={relatedContacts}
-              placeholder="e.g. @gmail.com, Telegram"
-            />
+          </div>
+
+          {/* --- платформы и контакты --- */}
+          <div className={styles.group}>
+            <div className={styles.groupLabel}>Платформы и контакты</div>
+            <div className={styles.checkboxGrid}>
+              {PLATFORMS.map(p => (
+                <label key={p.key} className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={!!form.platforms[p.key]}
+                    onChange={() => togglePlatform(p.key)}
+                  />
+                  <span>{p.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
 
