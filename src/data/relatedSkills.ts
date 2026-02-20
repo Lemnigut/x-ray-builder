@@ -245,6 +245,49 @@ const excludeRelated: Record<string, string[]> = {
   'consultant': ['freelance'],
 };
 
+// ── Related для Contacts ──
+const contactRelated: Record<string, string[]> = {
+  '@gmail.com':    ['@mail.ru', '@yandex.ru', '@outlook.com'],
+  '@mail.ru':      ['@gmail.com', '@yandex.ru', '@bk.ru', '@list.ru'],
+  '@yandex.ru':    ['@gmail.com', '@mail.ru', '@rambler.ru'],
+  '@outlook.com':  ['@gmail.com', '@hotmail.com', '@icloud.com'],
+  '@hotmail.com':  ['@outlook.com', '@gmail.com', '@yahoo.com'],
+  '@icloud.com':   ['@gmail.com', '@outlook.com'],
+  '@yahoo.com':    ['@gmail.com', '@hotmail.com'],
+  '@proton.me':    ['@gmail.com', '@outlook.com'],
+  '@rambler.ru':   ['@mail.ru', '@yandex.ru'],
+  '@bk.ru':        ['@mail.ru', '@list.ru', '@inbox.ru'],
+  '@list.ru':      ['@mail.ru', '@bk.ru', '@inbox.ru'],
+  '@inbox.ru':     ['@mail.ru', '@bk.ru', '@list.ru'],
+  'telegram':      ['WhatsApp', 'Skype', '@'],
+  'whatsapp':      ['Telegram', 'Viber', 'Skype'],
+  'skype':         ['Telegram', 'WhatsApp', 'Viber'],
+  'viber':         ['WhatsApp', 'Telegram', 'Skype'],
+  'email':         ['почта', '@gmail.com', '@mail.ru', 'Telegram'],
+  'почта':         ['email', '@gmail.com', '@mail.ru', '@yandex.ru'],
+  '@':             ['Telegram', '@gmail.com', '@mail.ru'],
+};
+
+export function getContactRelated(tags: string[]): string[] {
+  const tagSet = new Set(tags.map(t => t.toLowerCase()));
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const tag of tags) {
+    const key = tag.toLowerCase();
+    const matches = contactRelated[key] ?? [];
+    for (const r of matches) {
+      const rLower = r.toLowerCase();
+      if (!tagSet.has(rLower) && !seen.has(rLower)) {
+        seen.add(rLower);
+        result.push(r);
+      }
+    }
+  }
+
+  return result.slice(0, 5);
+}
+
 export function getExcludeRelated(tags: string[]): string[] {
   const tagSet = new Set(tags.map(t => t.toLowerCase()));
   const seen = new Set<string>();

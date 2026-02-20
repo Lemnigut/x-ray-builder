@@ -233,6 +233,31 @@ export const locationSuggestions: string[] = [
   'Barcelona',
 ];
 
+export const contactSuggestions: string[] = [
+  // Email domains
+  '@gmail.com',
+  '@mail.ru',
+  '@yandex.ru',
+  '@outlook.com',
+  '@hotmail.com',
+  '@icloud.com',
+  '@yahoo.com',
+  '@proton.me',
+  '@rambler.ru',
+  '@bk.ru',
+  '@list.ru',
+  '@inbox.ru',
+  // Messengers
+  'Telegram',
+  'WhatsApp',
+  'Skype',
+  'Viber',
+  // Contacts keywords
+  'email',
+  'почта',
+  '@',
+];
+
 export const excludeSuggestions: string[] = [
   // Грейды EN
   'intern',

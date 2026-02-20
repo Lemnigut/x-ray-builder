@@ -3,9 +3,9 @@ import { TagInput } from './components/TagInput/TagInput';
 import { RegionSelect } from './components/RegionSelect/RegionSelect';
 import { QueryPreview } from './components/QueryPreview/QueryPreview';
 import { buildQuery } from './utils/buildQuery';
-import { jobTitleSuggestions, skillSuggestions, locationSuggestions, excludeSuggestions } from './data/suggestions';
+import { jobTitleSuggestions, skillSuggestions, locationSuggestions, excludeSuggestions, contactSuggestions } from './data/suggestions';
 import { fetchSkillSuggestions } from './utils/fetchSkillSuggestions';
-import { getRelatedSuggestions, getExcludeRelated } from './data/relatedSkills';
+import { getRelatedSuggestions, getExcludeRelated, getContactRelated } from './data/relatedSkills';
 import type { FormState } from './types';
 import styles from './App.module.css';
 
@@ -17,6 +17,7 @@ const initialState: FormState = {
   locations: [],
   companies: [],
   exclude: [],
+  contacts: [],
 };
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
   const relatedSkillsAnd = useMemo(() => getRelatedSuggestions(form.skillsAnd), [form.skillsAnd]);
   const relatedSkillsOr = useMemo(() => getRelatedSuggestions(form.skillsOr), [form.skillsOr]);
   const relatedExclude = useMemo(() => getExcludeRelated(form.exclude), [form.exclude]);
+  const relatedContacts = useMemo(() => getContactRelated(form.contacts), [form.contacts]);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -106,6 +108,15 @@ export default function App() {
               onChange={v => update('locations', v)}
               suggestions={locationSuggestions}
               placeholder="e.g. Moscow, Remote"
+            />
+
+            <TagInput
+              label="Contacts — поиск email, мессенджеров"
+              tags={form.contacts}
+              onChange={v => update('contacts', v)}
+              suggestions={contactSuggestions}
+              relatedTags={relatedContacts}
+              placeholder="e.g. @gmail.com, Telegram"
             />
           </div>
         </div>

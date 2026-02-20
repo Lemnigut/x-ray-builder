@@ -45,6 +45,10 @@ export function buildQuery(fields: FormState): string {
   if (fields.companies.length)
     parts.push(fields.companies.map(intitle).join(' OR '));
 
+  // contacts: "@ gmail.com" OR "telegram" (поиск контактов в тексте)
+  if (fields.contacts.length)
+    parts.push(fields.contacts.map(c => `"${low(c)}"`).join(' OR '));
+
   // exclude: -intitle:X -intitle:Y (убираем из заголовка)
   if (fields.exclude.length)
     parts.push(fields.exclude.map(e => {
