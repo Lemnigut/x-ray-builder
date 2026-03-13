@@ -1,4 +1,6 @@
 import type { FormState } from '../types';
+import type { Platform } from '../data/platformConfigs';
+import { getPlatformConfig } from '../data/platformConfigs';
 
 export const PLATFORMS: { key: string; label: string }[] = [
   { key: 'telegram', label: 'Telegram' },
@@ -20,7 +22,6 @@ const PLATFORM_QUERIES: Record<string, string> = {
   yandex:   '"@yandex.ru"',
 };
 
-/** Нужны кавычки: несколько слов, цифры, точки, дефисы, +, #, и т.д. */
 function needsQuotes(value: string): boolean {
   return /\s|[0-9.+#\-/]/.test(value);
 }
@@ -39,46 +40,97 @@ function intitle(value: string): string {
   return needsQuotes(v) ? `intitle:"${v}"` : `intitle:${v}`;
 }
 
-export function buildQuery(fields: FormState): string {
-  const parts: string[] = [];
-
-  // site:
-  parts.push(`site:${fields.region}.linkedin.com/in`);
-
-  // job titles: intitle:X OR intitle:Y
-  if (fields.jobTitles.length)
-    parts.push(fields.jobTitles.map(intitle).join(' OR '));
-
-  // skills AND: все должны присутствовать (неявный AND через пробел)
-  if (fields.skillsAnd.length)
-    parts.push(fields.skillsAnd.map(quote).join(' '));
-
-  // skills OR: любой из
-  if (fields.skillsOr.length)
-    parts.push(fields.skillsOr.map(quote).join(' OR '));
-
-  // location: всегда в кавычках (города)
-  if (fields.locations.length)
-    parts.push(fields.locations.map(l => `"${low(l)}"`).join(' OR '));
-
-  // company: intitle:X OR intitle:Y
-  if (fields.companies.length)
-    parts.push(fields.companies.map(intitle).join(' OR '));
-
-  // platforms: чекбоксы — добавляют поисковые строки
-  const platformTerms = Object.entries(fields.platforms)
+function contactTerms(platforms: Record<string, boolean>): string[] {
+  return Object.entries(platforms)
     .filter(([, on]) => on)
     .map(([key]) => PLATFORM_QUERIES[key])
     .filter(Boolean);
-  if (platformTerms.length)
-    parts.push(platformTerms.join(' OR '));
+}
 
-  // exclude: -intitle:X -intitle:Y (убираем из заголовка)
+/** Общий построитель для всех платформ кроме LinkedIn */
+function buildGenericQuery(fields: FormState, site: string, fixedTerms: string[]): string {
+  const parts: string[] = [];
+
+  parts.push(`site:${site}`);
+
+  if (fields.jobTitles.length)
+    parts.push(fields.jobTitles.map(quote).join(' OR '));
+
+  if (fields.habrGrades.length)
+    parts.push(fields.habrGrades.map(g => g.toLowerCase()).join(' OR '));
+
+  if (fields.skillsAnd.length)
+    parts.push(fields.skillsAnd.map(quote).join(' '));
+
+  if (fields.skillsOr.length)
+    parts.push(fields.skillsOr.map(quote).join(' OR '));
+
+  if (fields.locations.length)
+    parts.push(fields.locations.map(l => `"${low(l)}"`).join(' OR '));
+
+  if (fields.companies.length)
+    parts.push(fields.companies.map(quote).join(' OR '));
+
+  const ct = contactTerms(fields.platforms);
+  if (ct.length) parts.push(ct.join(' OR '));
+
+  for (const term of fixedTerms)
+    parts.push(term);
+
   if (fields.exclude.length)
     parts.push(fields.exclude.map(e => {
       const v = low(e);
-      return needsQuotes(v) ? `-intitle:"${v}"` : `-intitle:${v}`;
+      return needsQuotes(v) ? `-"${v}"` : `-${v}`;
     }).join(' '));
 
   return parts.join(' ');
+}
+
+export function buildQuery(fields: FormState, platform: Platform): string {
+  const config = getPlatformConfig(platform);
+
+  // ── Habr Career — особый статус ──
+  if (platform === 'habr') {
+    const statusTerms: string[] = [];
+    if (fields.habrStatus === 'about')
+      statusTerms.push('"обо мне"');
+    else if (fields.habrStatus === 'seeking')
+      statusTerms.push('"Ищу работу" OR "Рассмотрю предложения" -"Не ищу работу" -intitle:специалисты');
+    return buildGenericQuery(fields, config.site, statusTerms);
+  }
+
+  // ── LinkedIn — intitle + регион ──
+  if (platform === 'linkedin') {
+    const parts: string[] = [];
+    parts.push(`site:${fields.region}.linkedin.com/in`);
+
+    if (fields.jobTitles.length)
+      parts.push(fields.jobTitles.map(intitle).join(' OR '));
+
+    if (fields.skillsAnd.length)
+      parts.push(fields.skillsAnd.map(quote).join(' '));
+
+    if (fields.skillsOr.length)
+      parts.push(fields.skillsOr.map(quote).join(' OR '));
+
+    if (fields.locations.length)
+      parts.push(fields.locations.map(l => `"${low(l)}"`).join(' OR '));
+
+    if (fields.companies.length)
+      parts.push(fields.companies.map(intitle).join(' OR '));
+
+    const ct = contactTerms(fields.platforms);
+    if (ct.length) parts.push(ct.join(' OR '));
+
+    if (fields.exclude.length)
+      parts.push(fields.exclude.map(e => {
+        const v = low(e);
+        return needsQuotes(v) ? `-intitle:"${v}"` : `-intitle:${v}`;
+      }).join(' '));
+
+    return parts.join(' ');
+  }
+
+  // ── Все остальные платформы ──
+  return buildGenericQuery(fields, config.site, config.fixedTerms);
 }

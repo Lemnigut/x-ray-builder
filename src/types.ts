@@ -1,3 +1,5 @@
+export type HabrStatus = '' | 'about' | 'seeking';
+
 export interface FormState {
   region: string;
   jobTitles: string[];
@@ -7,6 +9,8 @@ export interface FormState {
   companies: string[];
   exclude: string[];
   platforms: Record<string, boolean>;
+  habrStatus: HabrStatus;
+  habrGrades: string[];
 }
 
 export interface Region {

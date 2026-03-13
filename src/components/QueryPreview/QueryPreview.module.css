@@ -62,10 +62,30 @@
   color: #feb2b2;
 }
 
+.warning {
+  padding: 10px 14px;
+  background: rgba(245, 101, 101, 0.08);
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #fc8181;
+  line-height: 1.5;
+}
+
+.queryBoxWarn {
+  border-color: rgba(245, 101, 101, 0.4);
+}
+
 .actions {
   display: flex;
+  align-items: center;
   gap: 10px;
-  justify-content: flex-end;
+  justify-content: space-between;
+}
+
+.actionsRight {
+  display: flex;
+  gap: 10px;
 }
 
 .btn {
@@ -100,4 +120,10 @@
 .btnPrimary:hover:not(:disabled) {
   background: #3b82f6;
   border-color: #3b82f6;
+}
+
+.btnActive {
+  background: #2a3f55;
+  border-color: #4a9eff;
+  color: #63b3ed;
 }

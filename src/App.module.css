@@ -108,3 +108,57 @@
   background: #1e2d3d;
   margin: 28px 0;
 }
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clearBtn {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid #2a3f55;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.clearBtn:hover {
+  border-color: #e53e3e;
+  color: #fc8181;
+  background: rgba(229, 62, 62, 0.08);
+}
+
+.statusToggle {
+  display: flex;
+  gap: 8px;
+}
+
+.statusBtn {
+  padding: 7px 16px;
+  background: #1a2536;
+  border: 1px solid #2a3f55;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.statusBtn:hover {
+  border-color: #4a9eff;
+  color: #e2e8f0;
+}
+
+.statusBtnActive {
+  background: rgba(74, 158, 255, 0.12);
+  border-color: #4a9eff;
+  color: #63b3ed;
+  font-weight: 600;
+}

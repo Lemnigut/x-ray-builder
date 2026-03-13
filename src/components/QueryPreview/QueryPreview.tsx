@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from './QueryPreview.module.css';
 
+const QUERY_LIMIT = 2048;
+
 interface QueryPreviewProps {
   query: string;
 }
@@ -14,7 +16,7 @@ function tokenize(query: string): string[] {
 
   while ((match = re.exec(query)) !== null) {
     if (match.index > lastIndex) {
-      tokens.push(query.slice(lastIndex, match.index)); // whitespace
+      tokens.push(query.slice(lastIndex, match.index));
     }
     tokens.push(match[0]);
     lastIndex = re.lastIndex;
@@ -36,8 +38,8 @@ function highlightQuery(query: string): React.ReactNode[] {
       continue;
     }
 
-    if (token === 'OR') {
-      nodes.push(<span key={key++} className={styles.operator}>OR</span>);
+    if (token === 'OR' || token === '|') {
+      nodes.push(<span key={key++} className={styles.operator}>{token}</span>);
     } else if (token.startsWith('site:')) {
       nodes.push(
         <span key={key++}>
@@ -71,33 +73,55 @@ function highlightQuery(query: string): React.ReactNode[] {
 
 export function QueryPreview({ query }: QueryPreviewProps) {
   const [copied, setCopied] = useState(false);
+  const [usePipe, setUsePipe] = useState(false);
+
+  const displayQuery = usePipe ? query.replace(/ OR /g, '|') : query;
+  const tooLong = displayQuery.length > QUERY_LIMIT;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(query);
+    await navigator.clipboard.writeText(displayQuery);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSearch = () => {
-    const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    const url = `https://www.google.com/search?q=${encodeURIComponent(displayQuery)}`;
     window.open(url, '_blank');
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>Generated Query</div>
-      <div className={styles.queryBox}>
+
+      {tooLong && (
+        <div className={styles.warning}>
+          Запрос слишком длинный ({displayQuery.length} символов). Google может обрезать его — попробуйте убрать лишние поля.
+        </div>
+      )}
+
+      <div className={`${styles.queryBox} ${tooLong ? styles.queryBoxWarn : ''}`}>
         <code className={styles.queryText}>
-          {query ? highlightQuery(query) : <span className={styles.placeholder}>Fill in the fields above...</span>}
+          {displayQuery ? highlightQuery(displayQuery) : <span className={styles.placeholder}>Fill in the fields above...</span>}
         </code>
       </div>
+
       <div className={styles.actions}>
-        <button className={styles.btn} onClick={handleCopy} disabled={!query}>
-          {copied ? 'Copied!' : 'Copy'}
+        <button
+          className={`${styles.btn} ${usePipe ? styles.btnActive : ''}`}
+          onClick={() => setUsePipe(v => !v)}
+          disabled={!query}
+          title="Сокращает запрос, заменяя OR на |"
+        >
+          {usePipe ? 'Вернуть OR' : 'OR → |'}
         </button>
-        <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleSearch} disabled={!query}>
-          Search in Google
-        </button>
+        <div className={styles.actionsRight}>
+          <button className={styles.btn} onClick={handleCopy} disabled={!query}>
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleSearch} disabled={!query}>
+            Search in Google
+          </button>
+        </div>
       </div>
     </div>
   );
